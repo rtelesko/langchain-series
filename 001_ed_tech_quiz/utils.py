@@ -1,6 +1,9 @@
 import PyPDF2
 import json
 import traceback
+import streamlit as st
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Table
 
 
 def parse_file(file):
@@ -43,6 +46,18 @@ def get_table_data(quiz_str):
     except Exception as e:
         traceback.print_exception(type(e), e, e.__traceback__)
         return False
+
+
+def create_pdf_from_dataframe(df, filename):
+    try:
+        doc = SimpleDocTemplate(filename, pagesize=A4)
+        elements = []
+        t = Table(df.values.tolist())
+        elements.append(t)
+        doc.build(elements)
+        print("PDF file successfully created:", filename)
+    except Exception as e:
+        st.warning('Error occurred ' + str(e), icon="⚠️")
 
 
 RESPONSE_JSON = {

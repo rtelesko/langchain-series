@@ -11,7 +11,7 @@ import traceback
 import pandas as pd
 from langchain.callbacks import get_openai_callback
 
-from utils import parse_file, get_table_data, RESPONSE_JSON
+from utils import parse_file, get_table_data, create_pdf_from_dataframe, RESPONSE_JSON
 
 # Load OpenAI API_KEY
 load_dotenv()
@@ -137,7 +137,10 @@ if button and uploaded_files is not None and mcq_count and level and tone:
                         st.table(df)
                         # Display the review in a text box
                         st.text_area(label="Review", value=response["review"])
+                        # Save results in a PDF file
+                        create_pdf_from_dataframe(df, "quiz_questions.pdf")
                     else:
                         st.error("Error in table data")
+
             else:
                 st.write(response)
