@@ -55,7 +55,7 @@ def create_pdf_from_dataframe(df, filename):
         t = Table(df.values.tolist())
         elements.append(t)
         doc.build(elements)
-        print("PDF file successfully created:", filename)
+        st.info("PDF file successfully created: ", filename)
     except Exception as e:
         st.warning('Error occurred ' + str(e), icon="⚠️")
 
