@@ -119,7 +119,7 @@ if button and uploaded_files is not None and mcq_count and level and tone:
                 )
         except Exception as e:
             traceback.print_exception(type(e), e, e.__traceback__)
-            st.error("Error")
+            st.error("Error: " + str(e))
         else:
             print(f"Total Tokens: {cb.total_tokens}")
             print(f"Prompt Tokens: {cb.prompt_tokens}")
@@ -138,7 +138,7 @@ if button and uploaded_files is not None and mcq_count and level and tone:
                         # Display the review in a text box
                         st.text_area(label="Review", value=response["review"])
                         # Save results in a PDF file
-                        create_pdf_from_dataframe(df, "quiz_questions.pdf")
+                        create_pdf_from_dataframe(df)
                     else:
                         st.error("Error in table data")
 
