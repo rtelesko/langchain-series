@@ -1,10 +1,7 @@
 from datetime import datetime
 
-import pandas as pd
-from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import cm
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, Paragraph
 
 
 # Defining Header and Footer
@@ -39,39 +36,13 @@ def _header_footer(canvas, doc):
 def create_content(df):
     doc = SimpleDocTemplate("mc_questions.pdf", pagesize=A4)
     # Container for the "Flowable" objects
-    elements = []
-
-    # Make heading for each column and start data list
-    column1_heading = "Name"
-    column2_heading = "Age"
-    column3_heading = "Hobby"
-    column4_heading = "Profession"
-
-    # Assemble data for each column using simple loop to append it into data list
-    # Initialize data of lists
-    my_data = {'Name': ['Tom', 'Nick', 'Krish', 'Jack'], 'Age': [20, 21, 19, 18],
-               'Hobby': ['Tennis', 'Soccer', 'Golf', 'Badminton'],
-               'Profession': ['Developer', 'Manager', 'Assistant', 'Teacher']}
-
-    # Create DataFrame
-    df = pd.DataFrame(my_data)
-
-    data = [[column1_heading, column2_heading, column3_heading, column4_heading]]
-    for i, row in df.iterrows():
-        data.append(list(row))
-
-    table_that_splits_over_pages = Table(data, [4 * cm, 4 * cm, 4 * cm, 4 * cm], repeatRows=1)
-    table_that_splits_over_pages.hAlign = 'LEFT'
-    tbl_style = TableStyle([('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-                            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-                            ('LINEBELOW', (0, 0), (-1, -1), 1, colors.black),
-                            ('BOX', (0, 0), (-1, -1), 1, colors.black),
-                            ('BOX', (0, 0), (0, -1), 1, colors.black),
-                            ('BOX', (0, 0), (1, -1), 1, colors.black),
-                            ('BOX', (0, 0), (2, -1), 1, colors.black)])
-    tbl_style.add('BACKGROUND', (0, 0), (3, 0), colors.lightblue)
-    tbl_style.add('BACKGROUND', (0, 1), (-1, -1), colors.white)
-    table_that_splits_over_pages.setStyle(tbl_style)
-    elements.append(table_that_splits_over_pages)
-
-    doc.build(elements, onFirstPage=_header_footer, onLaterPages=_header_footer)
+    elements = ""
+    # Loop through the rows using iterrows()
+    for index, row in df.iterrows():
+        elements += "Question: " + str(index) + "\n"
+        elements += row['MCQ'] + "\n"
+        elements += "Choices: " + row["Choices"] + "\n"
+        elements += "Correct: " + row["Correct"]
+        elements += "\n\n"
+    elements = elements.replace("|", "")
+    doc.build([Paragraph(elements.replace("\n", "<br />"))], onFirstPage=_header_footer, onLaterPages=_header_footer)

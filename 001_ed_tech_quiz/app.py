@@ -6,12 +6,15 @@ from langchain.llms import OpenAI
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.chains import SequentialChain
+from langchain.callbacks import get_openai_callback
 import streamlit as st
 import traceback
 import pandas as pd
-from langchain.callbacks import get_openai_callback
+import imgkit
 
 from utils import parse_file, get_table_data, create_pdf_from_dataframe, RESPONSE_JSON
+
+import dataframe_image as dfi
 
 # Load OpenAI API_KEY
 load_dotenv()
