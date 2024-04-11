@@ -1,9 +1,10 @@
-import PyPDF2
 import json
 import traceback
+
+import PyPDF2
 import streamlit as st
 
-from reportlab_pdf import create_content
+from reportlab_pdf import create_content, create_content_solutions
 
 
 def parse_file(file):
@@ -51,9 +52,14 @@ def get_table_data(quiz_str):
 def create_pdf_from_dataframe(df):
     try:
         create_content(df)
-        st.info("PDF file successfully created", icon="🔥")
+        st.info("PDF file without solutions successfully created", icon="🔥")
     except Exception as e:
-        st.warning('Error occurred ' + str(e), icon="⚠️")
+        st.error('Error occurred: ' + str(e), icon="🚨")
+    try:
+        create_content_solutions(df)
+        st.info("PDF file with solutions successfully created", icon="🔥")
+    except Exception as e:
+        st.error('Error occurred: ' + str(e), icon="🚨")
 
 
 RESPONSE_JSON = {

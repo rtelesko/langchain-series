@@ -1,20 +1,17 @@
 import json
-from PIL import Image
-
-from dotenv import load_dotenv
-from langchain.llms import OpenAI
-from langchain.chains import LLMChain
-from langchain.prompts import PromptTemplate
-from langchain.chains import SequentialChain
-from langchain.callbacks import get_openai_callback
-import streamlit as st
 import traceback
+
 import pandas as pd
-import imgkit
+import streamlit as st
+from PIL import Image
+from dotenv import load_dotenv
+from langchain.callbacks import get_openai_callback
+from langchain.chains import LLMChain
+from langchain.chains import SequentialChain
+from langchain.llms import OpenAI
+from langchain.prompts import PromptTemplate
 
 from utils import parse_file, get_table_data, create_pdf_from_dataframe, RESPONSE_JSON
-
-import dataframe_image as dfi
 
 # Load OpenAI API_KEY
 load_dotenv()
@@ -89,10 +86,10 @@ with st.form("user_inputs"):
     level = st.radio(label="Select applicable level of difficulty", options=["easy", "medium", "complex"])
     tone = st.radio(label="Select applicable tone for the quiz",
                     options=["formal", "informal", "friendly", "professional"])
-    button = st.form_submit_button("Create quiz")
+    button_quiz = st.form_submit_button("Create quiz questions")
 
 # Check if the button is clicked and all fields have inputs
-if button and uploaded_files is not None and mcq_count and level and tone:
+if button_quiz and uploaded_files is not None and mcq_count and level and tone:
 
     # Create a list to store the uploaded file names
     file_list = []
@@ -122,7 +119,7 @@ if button and uploaded_files is not None and mcq_count and level and tone:
                 )
         except Exception as e:
             traceback.print_exception(type(e), e, e.__traceback__)
-            st.error("Error: " + str(e))
+            st.error("Error: " + str(e), icon="🚨")
         else:
             print(f"Total Tokens: {cb.total_tokens}")
             print(f"Prompt Tokens: {cb.prompt_tokens}")
@@ -138,12 +135,12 @@ if button and uploaded_files is not None and mcq_count and level and tone:
                         df = pd.DataFrame(table_data)
                         df.index = df.index + 1
                         st.table(df)
+                        # Create PDF files
+                        create_pdf_from_dataframe(df)
                         # Display the review in a text box
                         st.text_area(label="Review", value=response["review"])
-                        # Save results in a PDF file
-                        create_pdf_from_dataframe(df)
                     else:
-                        st.error("Error in table data")
+                        st.error("Error in table data", icon="🚨")
 
             else:
                 st.write(response)

@@ -1,3 +1,4 @@
+import os.path
 from datetime import datetime
 
 from reportlab.lib.pagesizes import A4
@@ -33,16 +34,34 @@ def _header_footer(canvas, doc):
     canvas.restoreState()
 
 
-def create_content(df):
-    doc = SimpleDocTemplate("mc_questions.pdf", pagesize=A4)
+def create_content_solutions(df):
+    out_file_name = "mc_questions_solutions.pdf"
+    out_file_dir = "C:\\Users\\raine\\Downloads"
+    out_file_path = os.path.join(out_file_dir, out_file_name)
+    doc = SimpleDocTemplate(out_file_path, pagesize=A4)
     # Container for the "Flowable" objects
     elements = ""
     # Loop through the rows using iterrows()
     for index, row in df.iterrows():
         elements += "Question: " + str(index) + "\n"
         elements += row['MCQ'] + "\n"
-        elements += "Choices: " + row["Choices"] + "\n"
+        elements += "Choices: " + "\n" + row["Choices"].replace("|", "\n") + "\n"
         elements += "Correct: " + row["Correct"]
         elements += "\n\n"
-    elements = elements.replace("|", "")
+    doc.build([Paragraph(elements.replace("\n", "<br />"))], onFirstPage=_header_footer, onLaterPages=_header_footer)
+
+
+def create_content(df):
+    out_file_name = "mc_questions.pdf"
+    out_file_dir = "C:\\Users\\raine\\Downloads"
+    out_file_path = os.path.join(out_file_dir, out_file_name)
+    doc = SimpleDocTemplate(out_file_path, pagesize=A4)
+    # Container for the "Flowable" objects
+    elements = ""
+    # Loop through the rows using iterrows()
+    for index, row in df.iterrows():
+        elements += "Question: " + str(index) + "\n"
+        elements += row['MCQ'] + "\n"
+        elements += "Choices: " + "\n" + row["Choices"].replace("|", "\n") + "\n"
+        elements += "\n\n"
     doc.build([Paragraph(elements.replace("\n", "<br />"))], onFirstPage=_header_footer, onLaterPages=_header_footer)
