@@ -1,48 +1,21 @@
-# Langchain-Series
+Copyright (c) 2024 Rainer Telesko\
+Copyright (c) Cogent Labs 2023\
+https://github.com/Cogent-Labs-Inc/langchain-series/tree/main/001_ed_tech_quiz
 
-The "langchain-series" project is a collection of diverse little apps that demonstrate the practical applications of AI chatbots in real-world scenarios. Each app within the series showcases the capabilities of chatbot technologies in different domains, providing users with interactive and engaging experiences.
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-## Stack Details
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-Python = 3.10
-
-## Installation
-
-1. Clone the repository to your local machine:
-2. Create a virtual environment using the following command:
-    ```
-    python3 -m venv your-env-name
-    ```
-3. Activate the virtual environment:
-- On Linux or macOS:
-  ```
-  source env_name/bin/activate
-  ```
-- On Windows:
-  ```
-  env_name\Scripts\activate
-  ```
-
-4. Install the project dependencies by running the following command:
-    ```
-    pip install -r requirements.txt
-    ```
-
-## Setting Up Environment Variables
-
-To use the project, you need to set up your environment variables. Follow the steps below to create a `.env` file in the base project directory and add your OpenAI API key.
-
-1. Create a new file named `.env` in the base project directory.
-
-2. Open the `.env` file in a text editor and add the following line:
-```
-OPENAI_API_KEY=your-api-key-goes-here
-```
-## Usage
-
-1. Navigate to the project you want to run: `cd project_name`
-
-2. Run the application using the following command:
-  ```
-  streamlit run app.py
-  ```
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

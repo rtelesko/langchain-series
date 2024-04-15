@@ -1,5 +1,5 @@
-Copyright (c) 2024 Rainer Telesko
-Copyright (c) Cogent Labs 2023
+Copyright (c) 2024 Rainer Telesko\
+Copyright (c) Cogent Labs 2023\
 https://github.com/Cogent-Labs-Inc/langchain-series/tree/main/001_ed_tech_quiz
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
