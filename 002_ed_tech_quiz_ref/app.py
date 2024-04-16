@@ -64,83 +64,84 @@ generate_evaluate_chain = SequentialChain(
     verbose=True,
 )
 
-st.markdown("<h1 style='text-align: center; color: red;'>Quiz Generation for Educational Content</h1>",
-            unsafe_allow_html=True)
-st.balloons()
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.write(' ')
-with col2:
-    image = Image.open('img/quiz.jpg')
-    st.image(image)
-with col3:
-    st.write(' ')
+with st.container():
+    st.markdown("<h1 style='text-align: center; color: red;'>Quiz Generator for Educational Content</h1>",
+                unsafe_allow_html=True)
+    st.balloons()
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.write(' ')
+    with col2:
+        image = Image.open('img/quiz.jpg')
+        st.image(image)
+    with col3:
+        st.write(' ')
 
-# Create a form using st.form
-with st.form("user_inputs"):
-    # File upload
-    uploaded_files = st.file_uploader("Upload one or more pdf or text files", accept_multiple_files=True)
+    # Create a form using st.form
+    with st.form("user_inputs"):
+        # File upload
+        uploaded_files = st.file_uploader("Upload one or more pdf or text files", accept_multiple_files=True)
+        # Input fields
+        mcq_count = st.number_input("Number of MCQ", min_value=3, max_value=20)
+        level = st.radio(label="Select applicable level of difficulty", options=["easy", "medium", "complex"])
+        tone = st.radio(label="Select applicable tone for the quiz",
+                        options=["formal", "informal", "friendly", "professional"])
+        button_quiz = st.form_submit_button("Create quiz questions")
 
-    # Input fields
-    mcq_count = st.number_input("Number of MCQ", min_value=3, max_value=20)
-    level = st.radio(label="Select applicable level of difficulty", options=["easy", "medium", "complex"])
-    tone = st.radio(label="Select applicable tone for the quiz",
-                    options=["formal", "informal", "friendly", "professional"])
-    button_quiz = st.form_submit_button("Create quiz questions")
-
-# Check if the button is clicked and all fields have inputs
-if button_quiz and uploaded_files is not None and mcq_count and level and tone:
-
-    # Create a list to store the uploaded file names
-    file_list = []
-    st.write("Uploaded Files:")
-    for uploaded_file in uploaded_files:
-        if uploaded_file is not None:
-            # Append the name of the uploaded file to the file_list
-            file_list.append(uploaded_file)
-            st.markdown("- " + uploaded_file.name)
-
-    with st.spinner("Loading..."):
-        try:
-            text = ""
-            for uploaded_file in uploaded_files:
-                text += parse_file(uploaded_file)
-
-            # count tokens and cost of api call
-            with get_openai_callback() as cb:
-                response = generate_evaluate_chain(
-                    {
-                        "text": text,
-                        "number": mcq_count,
-                        "level": level,
-                        "tone": tone,
-                        "response_json": json.dumps(RESPONSE_JSON),
-                    }
-                )
-        except Exception as e:
-            traceback.print_exception(type(e), e, e.__traceback__)
-            st.error("Error: " + str(e), icon="🚨")
+    # Check if the button is clicked and all fields have inputs
+    if button_quiz and uploaded_files is not None and mcq_count and level and tone:
+        # Create a list to store the uploaded file names
+        file_list = []
+        st.write("Uploaded Files:")
+        if not uploaded_files:
+            st.markdown("None")
         else:
-            print(f"Total Tokens: {cb.total_tokens}")
-            print(f"Prompt Tokens: {cb.prompt_tokens}")
-            print(f"Completion Tokens: {cb.completion_tokens}")
-            print(f"Total Cost (USD): ${cb.total_cost}")
+            for uploaded_file in uploaded_files:
+                if uploaded_file is not None:
+                    # Append the name of the uploaded file to the file_list
+                    file_list.append(uploaded_file)
+                    st.markdown("- " + uploaded_file.name)
 
-            if isinstance(response, dict):
-                # Extract quiz data from the response
-                quiz = response.get("quiz", None)
-                if quiz is not None:
-                    table_data = get_table_data(quiz)
-                    if table_data is not None:
-                        df = pd.DataFrame(table_data)
-                        df.index = df.index + 1
-                        st.table(df)
-                        # Create PDF files
-                        create_pdf_from_dataframe(df)
-                        # Display the review in a text box
-                        st.text_area(label="Review", value=response["review"])
-                    else:
-                        st.error("Error in table data", icon="🚨")
+        with st.spinner("Loading..."):
+            try:
+                text = ""
+                for uploaded_file in uploaded_files:
+                    text += parse_file(uploaded_file)
 
+                # count tokens and cost of api call
+                with get_openai_callback() as cb:
+                    response = generate_evaluate_chain(
+                        {
+                            "text": text,
+                            "number": mcq_count,
+                            "level": level,
+                            "tone": tone,
+                            "response_json": json.dumps(RESPONSE_JSON),
+                        }
+                    )
+            except Exception as e:
+                traceback.print_exception(type(e), e, e.__traceback__)
+                st.error("Error: " + str(e), icon="🚨")
             else:
-                st.write(response)
+                print(f"Total Tokens: {cb.total_tokens}")
+                print(f"Prompt Tokens: {cb.prompt_tokens}")
+                print(f"Completion Tokens: {cb.completion_tokens}")
+                print(f"Total Cost (USD): ${cb.total_cost}")
+
+                if isinstance(response, dict):
+                    # Extract quiz data from the response
+                    quiz = response.get("quiz", None)
+                    if quiz is not None:
+                        table_data = get_table_data(quiz)
+                        if table_data is not None:
+                            df = pd.DataFrame(table_data)
+                            df.index = df.index + 1
+                            st.table(df)
+                            # Create PDF files
+                            create_pdf_from_dataframe(df)
+                            # Display the review in a text box
+                            st.text_area(label="Review", value=response["review"])
+                        else:
+                            st.error("Error in table data", icon="🚨")
+                else:
+                    st.write(response)
